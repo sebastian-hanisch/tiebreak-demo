@@ -1,5 +1,7 @@
 # Tie-Breaker im Schweizer System – wer entscheidet bei Punktgleichheit? – Streamlit-Demo
 
+**[→ Demo live ausprobieren](https://sebastianhanisch-tiebreak-demo.streamlit.app/)**
+
 Zusatzstück der Linie **Turnierplanung** (Konzepte-Reihe für die Website „Sebastian Hanisch – Operations Research und Machine Learning“), hinter dem **Schweizer System**
 (`schweizer-system-demo`): Das Stück dort paart die Runden, dieses hier fragt, **wer bei Punktgleichheit vorn steht**. Die Demo spielt Turniere mit der **echten
 FIDE-Dutch-Engine** des Schwesterstücks (sieben Module, wortgleich übernommen), rechnet 18 Kriterien nach **FIDE C.07** und misst sie gegen die wahre Stärke, die in der
@@ -202,4 +204,4 @@ Gebaut mit Streamlit, Plotly, numpy, pandas und fpdf2.
 
 ---
 
-Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). Mehr zur Reihe: [Turnierplanung: 7 Wege zum Turnierplan](https://sebastianhanisch.net/konzepte-turnierplanung.html).
+Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). Mehr zur Reihe: [Turnierplanung: Plan, Paarung, Gleichstand](https://sebastianhanisch.net/konzepte-turnierplanung.html).

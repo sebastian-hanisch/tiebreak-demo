@@ -363,5 +363,5 @@ st.markdown("---")
 st.caption(
     "Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – "
     "Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). "
-    "Mehr zur Reihe: [Turnierplanung: 7 Wege zum Turnierplan](https://sebastianhanisch.net/konzepte-turnierplanung.html)."
+    "Mehr zur Reihe: [Turnierplanung: Plan, Paarung, Gleichstand](https://sebastianhanisch.net/konzepte-turnierplanung.html)."
 )
