@@ -260,5 +260,5 @@ def test_the_recommendation_table_rows(crit, withdraw, bye, noise, size):
     assert rows[2][0] == "Viele Rücktritte (30 %)" and rows[2][2] == "71 % Treffer; Buchholz 54 % mit FIDE-Regel, 45 % ohne"
     assert rows[3][2].startswith("Verzerrung ±0 Prozentpunkte; Buchholz +8, Sonneborn-Berger +16")
     assert rows[4][1].startswith("BH-C1;") and rows[4][2] == "60 % Treffer; Startwertung 61 %"
-    assert rows[5][2] == "69 % Treffer, besser als jedes Rechenkriterium"
+    assert rows[5][2] == "69 % Treffer im Modell, besser als jedes Rechenkriterium"
     assert rows[6][0].endswith("(16 Spieler, 5 Runden)") and rows[6][2] == "bestes Kriterium AOB mit 56 % Treffer"

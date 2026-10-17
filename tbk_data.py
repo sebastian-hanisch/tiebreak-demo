@@ -1,6 +1,6 @@
 """Vorberechnete Turniere (data/tournaments.json.gz): Laden, Kodieren und der Fingerabdruck der Engine.
 
-Die Experimente rechnen auf festen Turnieren, die einmal mit der echten FIDE-Dutch-Engine erzeugt wurden (rund 0,8 s je Turnier mit 32 Spielern und 7 Runden; über
+Die Experimente rechnen auf festen Turnieren, die einmal mit der echten FIDE-Dutch-Engine erzeugt wurden (etwa 1 bis 2 s je Turnier mit 32 Spielern und 7 Runden, rechnerabhängig; über
 900 Turniere wären live nicht tragbar). `tools/build_tournaments.py` erzeugt die Datei; ein Test erzeugt eine Stichprobe frisch und vergleicht Seed für Seed."""
 
 import gzip

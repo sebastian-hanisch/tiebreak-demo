@@ -1,5 +1,7 @@
 """Verdikte und Empfehlung nach Zweck: Texte, die live aus den Messwerten gebaut werden (keine feste Zahl im Text)."""
 
+import math
+
 import tbk_constants as C
 import tbk_criteria as K
 from tbk_evaluation import LOS, SIZE_SETS, STICH, WITHDRAW_SETS, Analysis, de, pct, signed
@@ -36,7 +38,7 @@ def verdict_criteria(metrics: dict):
     hi = max(m.winner_rate for m in metrics.values())
     return "info", (f"Unter den Rechenkriterien trifft **{best}** am häufigsten ({pct(solid[best].hit_rate)} % der getrennten Paare), **{worst}** am seltensten "
                     f"({pct(solid[worst].hit_rate)} %); das Los trifft per Definition 50 %. Der **Direktvergleich** nach Artikel 6 trennt nur "
-                    f"{pct(metrics['DE'].resolution, 1)} % der Paare. **Ein einziger Stichkampf** (eine Partie) trifft {pct(sp.hit_rate)} %, die "
+                    f"{pct(metrics['DE'].resolution, 1)} % der Paare. **Eine entschiedene Partie** unter zwei Punktgleichen (Stichkampf) trifft im Modell {pct(sp.hit_rate)} % (Remis nicht eingerechnet), die "
                     f"**Startwertung** {pct(rt.hit_rate)} %, aber nur, weil diese Setzliste gut ist (Rauschen {de(C.DEFAULT_NOISE)}; Experiment 6). Der Sieger ist in "
                     f"{pct(lo)} bis {pct(hi)} % der Turniere der wahre Stärkste, egal welches Kriterium: Tie-Breaker ordnen innerhalb der Punktgruppen, sie retten die "
                     "Stärkeordnung eines kurzen Turniers nicht.")
@@ -49,8 +51,11 @@ def verdict_flips(metrics: dict):
     bh = [k for k in ("BH", "BH-C1", "BH-C2", "BH-M1", "BH-M2") if k in solid]
     lo, hi = min(solid[k].flip_rate_t for k in bh), max(solid[k].flip_rate_t for k in bh)
     n = next(iter(solid.values())).top_tie
+    p = solid[worst].flip_rate_t
+    half = 1.96 * math.sqrt(p * (1 - p) / n)
     return "warning", (f"In {n} Turnieren mit Gleichstand um Platz 1 ändert die Umkehr **einer** Partie, an der niemand aus der Spitze beteiligt ist, bei der "
                        f"Buchholz-Familie in {pct(lo)} bis {pct(hi)} % der Turniere den Sieger, bei {worst} in {pct(solid[worst].flip_rate_t)} %. "
+                       f"Bei {n} Turnieren liegt die Unsicherheit einer Quote (95 %) bei etwa ±{pct(half)} Prozentpunkten; kleinere Unterschiede zwischen den Kriterien sind nicht gesichert. "
                        f"**Nicht kippbar** sind Kriterien, die nur von den eigenen Partien des Spielers und der Startliste abhängen: {', '.join(zero)}. Das misst eine Möglichkeit, "
                        "keine Absicht.")
 
@@ -89,7 +94,7 @@ def verdict_bye(rows):
     return "warning", (f"Bei ungerader Zahl bekommt jede Runde ein Freilos. **Buchholz ignoriert es und benachteiligt die Inhaber** ({bias('BH', 'ignore')} "
                        f"Prozentpunkte), die FIDE-Regel dreht das um (**{bias('BH', 'fide2026')}**): Der Inhaber wird gerechnet, als hätte er gegen einen "
                        f"Gegner mit der eigenen Punktzahl gespielt. **Sonneborn-Berger geht von {bias('SB', 'ignore')} auf {bias('SB', 'fide2026')}.** "
-                       f"Die Fortschrittswertung bleibt unverzerrt ({bias('PS', 'fide2026')}); **WIN zählt das Freilos als Sieg** und bevorzugt die Inhaber "
+                       f"Die Fortschrittswertung bleibt bei Freilosen unverzerrt ({bias('PS', 'fide2026')}); **WIN zählt das Freilos als Sieg** und bevorzugt die Inhaber "
                        f"({bias('WIN', 'fide2026')}), WON benachteiligt sie ({bias('WON', 'fide2026')}).")
 
 
@@ -122,8 +127,9 @@ def verdict_size(rows):
         return next(r["hit_rate"] for r in rows if r["value"] == label and r["key"] == key)
     small, big = SIZE_SETS[0][1], SIZE_SETS[-1][1]
     return "info", (f"Kleine Felder tragen kaum Information: im kleinsten Fall ({small}) trifft Buchholz {pct(at(small, 'BH'))} % und der Fortschritt "
-                    f"{pct(at(small, 'PS'))} %, im größten ({big}) {pct(at(big, 'BH'))} % und {pct(at(big, 'PS'))} %. Mehr Runden helfen, weil jeder Spieler mehr "
-                    "Gegner und mehr Ergebnisse hat.")
+                    f"{pct(at(small, 'PS'))} %, im größten ({big}) {pct(at(big, 'BH'))} % und {pct(at(big, 'PS'))} %. Mehr Runden helfen erst später: bei "
+                    f"32 Spielern trifft Buchholz mit 5, 7 und 9 Runden {pct(at(SIZE_SETS[1][1], 'BH'))}, {pct(at(SIZE_SETS[2][1], 'BH'))} und {pct(at(SIZE_SETS[3][1], 'BH'))} %, der Fortschritt "
+                    f"{pct(at(SIZE_SETS[1][1], 'PS'))}, {pct(at(SIZE_SETS[2][1], 'PS'))} und {pct(at(SIZE_SETS[3][1], 'PS'))} %.")
 
 
 def recommendations(main: dict, withdraw_rows, bye_rows, noise_rows, size_rows) -> list:
@@ -139,7 +145,7 @@ def recommendations(main: dict, withdraw_rows, bye_rows, noise_rows, size_rows) 
     rows.append(("Möglichst treffsicher, vollständiges Feld", f"{order[0]}, dann {order[1]}",
                  f"{pct(solid[order[0]].hit_rate)} und {pct(solid[order[1]].hit_rate)} % Treffer; Los 50 %",
                  f"Treffer und Kippbarkeit zusammen lesen: {order[1]} ist in {pct(solid[order[1]].flip_rate_t)} % der Turniere mit Gleichstand um Platz 1 kippbar; "
-                 f"der Stichkampf trifft {pct(main[STICH].hit_rate)} %."))
+                 f"der Stichkampf trifft im Modell {pct(main[STICH].hit_rate)} %."))
     w1 = WITHDRAW_SETS[-1][1]
     cand = {r["key"]: r["hit_rate"] for r in withdraw_rows if r["withdraw"] == w1 and r["mode"] == "fide2026"}
     b = max(cand, key=cand.get)
@@ -159,7 +165,7 @@ def recommendations(main: dict, withdraw_rows, bye_rows, noise_rows, size_rows) 
                  f"{pct(cand[b])} % Treffer; Startwertung {pct(rt)} %",
                  "Die Startwertung misst die Güte der Setzliste, nicht die Leistung im Turnier."))
     rows.append(("Eine zusätzliche Partie ist möglich", "Stichkampf unter den Punktgleichen",
-                 f"{pct(main[STICH].hit_rate)} % Treffer, besser als jedes Rechenkriterium",
+                 f"{pct(main[STICH].hit_rate)} % Treffer im Modell, besser als jedes Rechenkriterium",
                  "Kostet eine Partie je Gleichstand und ist selbst ein Zufallsergebnis (Remis nicht eingerechnet)."))
     small = SIZE_SETS[0][1]
     cand = {r["key"]: r["hit_rate"] for r in size_rows if r["value"] == small and r["key"] not in ("RTNG", STICH, LOS) and r["resolution"] >= 0.3}
