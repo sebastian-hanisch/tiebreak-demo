@@ -236,7 +236,7 @@ def test_every_recommendation_names_a_criterion_that_exists(crit, withdraw, bye,
 
 def test_the_playoff_reference_measures(crit):
     m = crit["STICH"]
-    assert round(100 * m.winner_rate, 2) == 21.75 and round(100 * m.podium_rate, 2) == 3.25 and round(m.tau, 4) == 0.6034
+    assert round(100 * m.winner_rate, 2) == 22.25 and round(100 * m.podium_rate, 2) == 3.5 and round(m.tau, 4) == 0.6148
 
 
 def test_the_remaining_verdict_texts(crit, withdraw, bye, noise, draw, size):

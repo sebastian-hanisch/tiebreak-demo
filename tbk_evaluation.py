@@ -122,9 +122,11 @@ def _runs(order_with_reason, score):
 
 
 def _stichkampf_order(t, score):
-    """Stichkampf unter den Punktgleichen: der Ausgang einer Partie ist σ(Δ) zugunsten des Stärkeren (logistisches Rauschen auf der Stärke)."""
+    """Stichkampf unter den Punktgleichen: der Ausgang einer Partie ist σ(Δ) zugunsten des Stärkeren.
+    Gumbel-Rauschen auf der Stärke erzeugt genau das (Differenz zweier unabhängiger Gumbel-Variablen ist logistisch verteilt);
+    Logistisches Rauschen auf der Stärke gäbe dagegen eine andere Gewinnwahrscheinlichkeit als σ(Δ) und passte nicht zur Erwartung in `measure`."""
     u = T.SplitMix64(t.seed ^ STICH_SALT).uniform(t.n)
-    noisy = [t.strength[r] + math.log(u[r] / (1.0 - u[r])) for r in range(t.n)]
+    noisy = [t.strength[r] - math.log(-math.log(u[r])) for r in range(t.n)]
     return sorted(range(1, t.n + 1), key=lambda r: (-score[r - 1], -noisy[r - 1]))
 
 

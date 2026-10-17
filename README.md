@@ -75,7 +75,7 @@ Hauptmenge, Behandlung nicht gespielter Runden nach FIDE ab 03/2026 (ohne Freilo
 | Partien mit Schwarz (BPG) | 51 % | 49,9 % | 0,499 | 0 % | 20 % | 0,572 |
 | Mittlere Gegnerwertung (ARO) / Leistungswertung (TPR) | 100 % | 52,3 % | 0,511 | 0 % | 22 % | 0,577 |
 | Startwertung (RTNG, Rauschen 0,4) | 100 % | **85,9 %** | 0,669 | 0 % | 25 % | 0,652 |
-| Stichkampf (eine Partie, Referenz) | 100 % | **69,3 %** | 0,693 | – | 22 % | 0,603 |
+| Stichkampf (eine Partie, Referenz) | 100 % | **69,3 %** | 0,693 | – | 22 % | 0,615 |
 | Los (Referenz) | 0 % | – | – | – | 20 % | 0,573 |
 
 Tests: `test_the_hit_rates_of_experiment_1`, `test_the_resolution_of_experiment_1`, `test_the_flip_rates_of_experiment_2`, `test_the_winner_is_rarely_the_strongest_whatever_the_criterion`.
