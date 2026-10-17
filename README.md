@@ -31,7 +31,7 @@ Empfehlung nach Zweck.
 - **Kriterien (FIDE C.07):** Buchholz BH (Art. 8 Abs. 1) mit Cut-1, Cut-2, Median-1, Median-2 (Art. 14), Mittlerer Buchholz der Gegner AOB (8.2), Sonneborn-Berger SB (9.1),
   Direktvergleich DE (Art. 6), Fortschrittswertung PS (7.5), dazu die Fortschrittswertungen der Gegner (älterer Brauch, ohne FIDE-Kürzel), Siege WIN (7.1, zählt Freilose) und WON
   (7.2, nur am Brett), Siege mit Schwarz BWG (7.4), Partien mit Schwarz BPG (7.3), gespielte Runden REP (7.6), mittlere Gegnerwertung ARO (10.1), Leistungswertung TPR (10.2, hier
-  logistisch statt nach der FIDE-Tabelle) und die Startwertung RTNG (10.6). Referenzen: der **Stichkampf** (eine Partie unter den Punktgleichen) und das **Los**.
+  logistisch statt nach der FIDE-Tabelle) und die Startwertung RTNG (Art. 10.6, nur in der Fassung ab 03/2026; in 08/2024 gibt es Artikel 10.6 nicht). Referenzen: der **Stichkampf** (eine Partie unter den Punktgleichen) und das **Los**.
 - **Kaskade (Art. 4 Abs. 2):** Für jede Untergruppe, die ein Kriterium nicht trennt, gilt das nächste; am Ende entscheidet das Los.
 - **Direktvergleich (Art. 6):** Die Summe der Ergebnisse gegeneinander (mehrfache Treffen als Mittel). Haben alle einander gespielt, ordnet sie die Gruppe; sonst steht im
   Schweizer System nur ein Spieler vorn, der es **unabhängig vom Ausgang der fehlenden Partien** ist; danach gilt Artikel 6 für den Rest erneut.
@@ -142,7 +142,8 @@ Tests: `test_the_hit_rates_of_experiment_1`, `test_the_resolution_of_experiment_
 
 - FIDE Handbook, C.07 *Play-Off and Tie-Break Regulations*, Fassungen „effective from 1 August 2024 till 28 February 2026“ (Council 29.07.2024) und „from 1 March 2026“
   (Council 02.02.2026), handbook.fide.com: Artikel 4 (Anwendung der Liste), 6 (Direktvergleich), 7 (Siege, Schwarzpartien, Fortschritt, REP), 8 (Buchholz, AOB), 9 (Sonneborn-Berger),
-  10 (ARO, TPR), 14 (Modifikatoren) und 16 (nicht gespielte Runden) über das Webportal gelesen, in Auszügen.
+  10 (ARO, TPR; 10.6 RTNG nur in der Fassung ab 03/2026), 14 (Modifikatoren) und 16 (nicht gespielte Runden) über das Webportal gelesen 2026-10-17, in Auszügen
+  (handbook.fide.com/chapter/TieBreakRegulations082024 und handbook.fide.com/chapter/TieBreakRegulations032026).
 - Das Buchholz-System ist nach Bruno Buchholz benannt (Jahr und Fundstelle nicht geprüft); Sonneborn-Berger nach den Genannten (Fundstelle nicht geprüft).
 - Steele, G. L., Lea, D., Flood, C. H. (2014): Fast splittable pseudorandom number generators. *OOPSLA 2014*, 453–472 (Zufallsstrom des Generators).
 

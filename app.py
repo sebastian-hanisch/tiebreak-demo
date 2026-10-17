@@ -353,7 +353,8 @@ Remis mit Wahrscheinlichkeit $d$, sonst Sieg des Weißen mit $(1-d)\,\sigma(\the
 
 **Literatur.**
 - FIDE Handbook, C.07 *Play-Off and Tie-Break Regulations* (Fassungen „effective from 1 August 2024 till 28 February 2026“ und „from 1 March 2026“, handbook.fide.com;
-  die Artikel 4, 6, 7, 8, 9, 14 und 16 nach dem veröffentlichten Text gelesen).
+  die Artikel 4, 6, 7, 8, 9, 10 [10.6 RTNG nur in der Fassung ab 03/2026], 14 und 16 über das Webportal gelesen 2026-10-17, in Auszügen;
+  handbook.fide.com/chapter/TieBreakRegulations082024 und handbook.fide.com/chapter/TieBreakRegulations032026).
 - Das Buchholz-System ist nach Bruno Buchholz benannt (Jahr und Fundstelle nicht geprüft).
 - Steele, G. L., Lea, D., Flood, C. H. (2014): Fast splittable pseudorandom number generators. *OOPSLA 2014*, 453–472 (Zufallsstrom des Generators).
         """
