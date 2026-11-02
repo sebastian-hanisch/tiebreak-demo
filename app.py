@@ -91,9 +91,22 @@ die Tie-Breaker**: Buchholz, Sonneborn-Berger, Direktvergleich, Fortschrittswert
 des Schwesterstücks, rechnet die Kriterien nach **FIDE C.07** und misst gegen die wahre Stärke, die in der Simulation bekannt ist: **wie gut trennen sie, wie leicht
 lassen sie sich kippen, und was machen Freilose und Rücktritte mit ihnen?** Am Ende steht eine **Empfehlung nach Zweck**.
 
-Weiter unten: sieben **🔬 Experimente** mit Verdikt, die **Empfehlungstabelle**, **🚧 Wo die Annahmen enden** und der Expander **📐 Mathematische Formulierung**.
+Wer neu im Thema ist, öffnet zuerst „💬 In einfachen Worten“. Weiter unten: sieben **🔬 Experimente** mit Verdikt, die **Empfehlungstabelle**, **🚧 Wo die Annahmen enden** und der Expander **📐 Mathematische Formulierung**.
 """
 )
+
+# erklaerseite:einfach:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/tie-breaker-erklaert.json, nicht von Hand ändern)
+with st.expander("💬 In einfachen Worten"):
+    st.markdown(
+        """
+Nach einigen Runden haben mehrere Spieler gleich viele Punkte, und die Rangliste braucht trotzdem eine Reihenfolge. Dafür gibt es Zusatzwertungen: Buchholz addiert die Punkte der Gegner, Sonneborn-Berger gewichtet sie mit dem eigenen Ergebnis gegen sie, der Fortschritt zählt die Punktestände nach jeder Runde zusammen, der Direktvergleich schaut auf die Partie der beiden.
+
+Die Demo spielt Turniere nach dem Schweizer System durch, in denen die wahre Stärke jedes Spielers bekannt ist, und misst für jede Zusatzwertung, wie oft bei zwei Punktgleichen der Stärkere vorn steht und wie leicht der Sieger durch eine einzelne Partie kippt, die ihn nichts angeht. Alles ist simuliert.
+
+[Ausführlich und verständlich erklärt, mit Fachteil](https://sebastianhanisch.net/tie-breaker-erklaert.html)
+        """
+    )
+# erklaerseite:einfach:end
 
 with st.expander("So entscheidet man bei Punktgleichheit", expanded=True):
     st.markdown(
@@ -322,6 +335,26 @@ st.markdown(
 st.markdown("---")
 
 with st.expander("📐 Mathematische Formulierung"):
+    # erklaerseite:lesehilfe:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/tie-breaker-erklaert.json, nicht von Hand ändern)
+    st.markdown(
+        r"""
+**Lesehilfe.** Gegeben sind $R$ gespielte Runden und Punktstände $s_i$. Punktgleiche Spieler bilden Gruppen; gesucht ist, wie gut eine Zusatzwertung die Gruppe in die Reihenfolge der wahren Stärken $\theta$ bringt.
+
+| Symbol | Bedeutung |
+|---|---|
+| $i$, $j$ | Spieler |
+| $s_i$ | Punktzahl von $i$ nach $R$ Runden |
+| $O_i$ | die Gegner von $i$ am Brett |
+| $p_{ij}$ | Punkte von $i$ gegen $j$ |
+| $s_i^{(r)}$ | Punktstand von $i$ nach Runde $r$ |
+| $BH_i$, $SB_i$, $PS_i$ | Buchholz, Sonneborn-Berger und Fortschrittswertung von $i$ |
+| $\theta$ | wahre Stärke eines Spielers in der Simulation |
+| $\sigma$ | logistische Funktion (aus einer Stärkedifferenz wird eine Gewinnwahrscheinlichkeit) |
+
+[Schritt für Schritt erklärt, mit Herleitung und Literatur](https://sebastianhanisch.net/tie-breaker-erklaert.html#fachleute)
+        """
+    )
+    # erklaerseite:lesehilfe:end
     st.markdown(
         r"""
 **Punkte und Gruppe.** Spieler $i$ hat nach $R$ Runden die Punktzahl $s_i$; punktgleiche Spieler bilden eine Gruppe $G$.
