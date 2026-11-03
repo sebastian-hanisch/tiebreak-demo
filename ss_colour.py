@@ -25,6 +25,18 @@ def _opposite(colour: str) -> str:
 
 
 def classify(player: Player) -> ColourPreference:
+    # `Player` ist unveränderlich und die Präferenz hängt nur von `games` ab - einmal je Instanz berechnen
+    # (wie `functools.cached_property`, das auf einer eingefrorenen Dataclass über `__dict__` arbeitet).
+    # Die Bracket-Suche ruft `classify` Millionen Mal für dieselben Spieler auf (gemessen: 15,8 Mio. Aufrufe
+    # in sechs Turnieren mit 31-32 Spielern).
+    cached = player.__dict__.get("_colour_preference")
+    if cached is None:
+        cached = _classify(player)
+        player.__dict__["_colour_preference"] = cached
+    return cached
+
+
+def _classify(player: Player) -> ColourPreference:
     last = player.last_colour
     if last is None:
         return ColourPreference(NONE, None)
@@ -77,12 +89,13 @@ def allocate(a: Player, b: Player) -> Pairing:
             winner = a if diff_a > diff_b else b
             return _pairing_with_preference(a, b, winner, pa if winner is a else pb)
 
-    # 5.2.3: zur zuletzt gespielten Farbe alternieren (pro Spieler betrachtet).
-    alt_a = _opposite(a.last_colour) if a.last_colour else None
-    alt_b = _opposite(b.last_colour) if b.last_colour else None
-    if alt_a is not None and alt_b is not None and alt_a != alt_b:
-        # Beide alternieren zu verschiedenen Farben - konfliktfrei erfüllbar.
-        return Pairing(white=a.rank, black=b.rank) if alt_a == WHITE else Pairing(white=b.rank, black=a.rank)
+    # 5.2.3: "Alternate the colours to the most recent time in which one player had White and the
+    # other Black" - ein PAARvergleich über die Historie, nicht "jeder wechselt zu seiner eigenen
+    # letzten Farbe" (frühere Fassung; gegen bbpPairings gemessen: ~1,5 % der Paare falsch, immer bei
+    # gleich starker Präferenz).
+    alternated = _alternate_to_last_difference(a, b)
+    if alternated is not None:
+        return alternated
 
     # 5.2.4: beide wollen (nach 5.2.1-5.2.3 unaufgelöst) dieselbe Farbe - der höherrangige Spieler
     # bekommt SEINE (=ihre gemeinsame) Präferenz erfüllt. NICHT dieselbe Regel wie 5.2.5 (die gilt
@@ -101,6 +114,22 @@ def allocate(a: Player, b: Player) -> Pairing:
     if pa.colour == WHITE:
         return Pairing(white=higher.rank, black=lower.rank)
     return Pairing(white=lower.rank, black=higher.rank)
+
+
+def _alternate_to_last_difference(a: Player, b: Player) -> Pairing | None:
+    """Art. 5.2.3: wer in der jüngsten Gegenüberstellung der beiden Historien Weiß hatte, bekommt
+    jetzt Schwarz. Gegenübergestellt wird so wie in bbpPairings' `findFirstColorDifference`
+    (`common.cpp`): in JEDER Historie nur die tatsächlich gespielten Partien (Freilose übersprungen),
+    von hinten gezählt - die k-te jüngste Partie des einen gegen die k-te jüngste des anderen, NICHT
+    Runde gegen Runde mit derselben Nummer. Der Unterschied zählt nur bei Freilosen (Art. 3.4 der
+    Allgemeinen Regeln: ungespielte Runden werden übergangen). `None`, wenn die kürzere Historie
+    aufgebraucht ist, ohne dass sich die Farben je unterscheiden (dann entscheidet 5.2.4)."""
+    played_a = [g.colour for g in reversed(a.games) if g.colour is not None]
+    played_b = [g.colour for g in reversed(b.games) if g.colour is not None]
+    for colour_a, colour_b in zip(played_a, played_b):
+        if colour_a != colour_b:
+            return Pairing(white=a.rank, black=b.rank) if colour_a == BLACK else Pairing(white=b.rank, black=a.rank)
+    return None
 
 
 def _pairing_with_preference(a: Player, b: Player, winner: Player, winner_pref: ColourPreference) -> Pairing:

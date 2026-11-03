@@ -49,7 +49,7 @@ PRESETS = {
     "Vereinsturnier": {**_BASE, "n": 16, "rounds": 5},
     "Viele Rücktritte": {**_BASE, "withdraw_on": True, "withdraw": 0.3, "c1": "BH", "c2": EMPTY, "c3": EMPTY, "c4": EMPTY, "mode": "ignore"},
     "Ungerade Zahl mit Freilosen": {**_BASE, "n": 31, "c1": "BH", "c2": EMPTY, "c3": EMPTY, "c4": EMPTY, "mode": "ignore"},
-    "Kippbares Turnier": {**_BASE, "seed": 23},
+    "Kippbares Turnier": {**_BASE, "seed": 31},
 }
 PRESET_HELP = {
     "Open mit 32 Spielern": "32 Spieler, 7 Runden, 20 % Remis: Direktvergleich, dann Buchholz ohne den schlechtesten Gegner, dann Buchholz, dann Siege.",

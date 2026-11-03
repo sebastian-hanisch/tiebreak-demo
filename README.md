@@ -4,7 +4,7 @@
 
 Zusatzstück der Linie **Turnierplanung** (Konzepte-Reihe für die Website „Sebastian Hanisch – Operations Research und Machine Learning“), hinter dem **Schweizer System**
 (`schweizer-system-demo`): Das Stück dort paart die Runden, dieses hier fragt, **wer bei Punktgleichheit vorn steht**. Die Demo spielt Turniere mit der **echten
-FIDE-Dutch-Engine** des Schwesterstücks (sieben Module, wortgleich übernommen), rechnet 18 Kriterien nach **FIDE C.07** und misst sie gegen die wahre Stärke, die in der
+FIDE-Dutch-Engine** des Schwesterstücks (acht Module, wortgleich übernommen), rechnet 18 Kriterien nach **FIDE C.07** und misst sie gegen die wahre Stärke, die in der
 Simulation bekannt ist. Alles ist simuliert; es gibt keinen echten Datensatz.
 
 ## Warum dieses Problem
@@ -17,9 +17,9 @@ Sonneborn-Berger, Direktvergleich, Fortschrittswertung) werden in der Praxis als
 
 **Die Rechenkriterien trennen die Punktgleichen höchstens mäßig besser als der Zufall (49 bis 63 % richtig bei 50 % für das Los; Fortschritt vorn, Buchholz-Familie bei 58 bis 60 %); eine entschiedene Partie unter zwei Punktgleichen trifft im Modell 69 % (Remis nicht eingerechnet).** Im
 FIDE-Dutch-Turnier mit 32 Spielern, 7 Runden und 20 % Remis trifft die **Fortschrittswertung 63 %** und ist durch Partien Dritter **nicht kippbar**; Buchholz und seine Varianten
-treffen 58 bis 60 %, sind aber in rund einem Fünftel bis einem Drittel (19 bis 32 %) der Turniere mit Gleichstand um Platz 1 durch **eine** irrelevante Partie der letzten Runde kippbar (125 Turniere, die Intervalle sind etwa ±8 Punkte breit; Sonneborn-Berger nominell 39 %, statistisch nicht klar von Buchholz getrennt).
-Der **Direktvergleich** nach FIDE Artikel 6 trennt in dieser Konfiguration (32 Spieler, 7 Runden) nur 1,5 % der Punktgleichen (329 von 22 125 Paaren). **Freilose** und **Rücktritte** verzerren die Buchholz-Familie, je nachdem, wie
-man die nicht gespielten Runden rechnet; die **Fortschrittswertung zeigt bei Freilosen keine Verzerrung** (−0,2 Prozentpunkte). **Welches Kriterium „das beste“ ist, hängt am Zweck**; das Stück endet in einer
+treffen 58 bis 60 %, sind aber in rund einem Viertel bis einem Drittel (23 bis 34 %) der Turniere mit Gleichstand um Platz 1 durch **eine** irrelevante Partie der letzten Runde kippbar (124 Turniere, die Intervalle sind etwa ±8 Punkte breit; Sonneborn-Berger nominell 35 %, statistisch nicht klar von Buchholz getrennt).
+Der **Direktvergleich** nach FIDE Artikel 6 trennt in dieser Konfiguration (32 Spieler, 7 Runden) nur 1,6 % der Punktgleichen (350 von 22 080 Paaren). **Freilose** und **Rücktritte** verzerren die Buchholz-Familie, je nachdem, wie
+man die nicht gespielten Runden rechnet; die **Fortschrittswertung zeigt bei Freilosen keine Verzerrung** (0,0 Prozentpunkte). **Welches Kriterium „das beste“ ist, hängt am Zweck**; das Stück endet in einer
 Empfehlung nach Zweck.
 
 ## Modell
@@ -49,7 +49,7 @@ Empfehlung nach Zweck.
 - **Experimente** über **feste, vorberechnete Turniere** (`data/tournaments.json.gz`, 1140 Turniere in 12 Mengen, rund 0,7 MB): die Engine braucht etwa 1 bis 2 s je Turnier (rechnerabhängig) mit 32 Spielern
   und 7 Runden, über 1000 Turniere wären live nicht tragbar. Die Datei trägt den Fingerabdruck der Engine; `tests/test_data.py` erzeugt eine Stichprobe frisch und vergleicht
   Seed für Seed. Neu erzeugen: `python tools/build_tournaments.py`.
-- **Hauptmenge:** 400 Turniere mit 32 Spielern, 7 Runden, 20 % Remis, Rauschen 0,4; Gleichstand um Platz 1 in **125** davon (31 %). Weitere Mengen: Rauschen 0 / 1 / 2, Remis 0 / 40 %,
+- **Hauptmenge:** 400 Turniere mit 32 Spielern, 7 Runden, 20 % Remis, Rauschen 0,4; Gleichstand um Platz 1 in **124** davon (31 %). Weitere Mengen: Rauschen 0 / 1 / 2, Remis 0 / 40 %,
   Rücktritte 15 / 30 %, 16 Spieler mit 5 Runden, 32 mit 5 und 9 Runden, 31 Spieler (Freilose).
 - **Zufall:** `turnier_generator.py` mit SplitMix64-Strom (wortgleich mit den Repos der Linie); Paarung durch die Engine (deterministisch).
 - Das gezeigte Turnier der App wird **live** mit der Engine gespielt; ein Regler ändert dort Kaskade, Behandlung und Turnier, nicht die Experimente.
@@ -60,61 +60,61 @@ Hauptmenge, Behandlung nicht gespielter Runden nach FIDE ab 03/2026 (ohne Freilo
 
 | Kriterium | trennt | Treffer | Erwartung | kippbar (Turniere / Umkehrungen) | Sieger richtig | τ |
 |---|---|---|---|---|---|---|
-| Buchholz (BH) | 95 % | **59,5 %** | 0,552 | **32 % / 5,7 %** | 22 % | 0,592 |
-| BH Cut-1 | 95 % | 59,0 % | 0,550 | 29 % / 4,2 % | 23 % | 0,591 |
-| BH Cut-2 | 94 % | 58,9 % | 0,550 | 19 % / 2,6 % | 23 % | 0,590 |
-| BH Median-1 | 94 % | 58,8 % | 0,550 | 28 % / 4,0 % | 23 % | 0,590 |
-| BH Median-2 | 90 % | 58,5 % | 0,548 | 23 % / 3,3 % | 23 % | 0,589 |
-| Mittlerer Buchholz der Gegner (AOB) | 98 % | 58,5 % | 0,547 | **32 % / 7,2 %** | 22 % | 0,591 |
-| Sonneborn-Berger (SB) | 95 % | 58,2 % | 0,544 | **39 % / 7,2 %** | 22 % | 0,590 |
-| Direktvergleich (DE) | **1,5 %** | 53,2 % (auf 329 Paaren) | 0,519 | 0 % | 22 % | 0,574 |
-| **Fortschritt (PS)** | 94 % | **63,2 %** | 0,573 | **0 % / 0 %** | 21 % | 0,599 |
-| Fortschrittswertungen der Gegner | 99 % | 60,9 % | 0,559 | 9 % / 1,6 % | 22 % | 0,596 |
-| Siege (WIN) / am Brett (WON) | 46 % | 49,2 % | 0,497 | 0 % | 20 % | 0,572 |
-| Siege mit Schwarz (BWG) | 63 % | 50,3 % | 0,501 | 0 % | 19 % | 0,573 |
-| Partien mit Schwarz (BPG) | 51 % | 49,9 % | 0,499 | 0 % | 20 % | 0,572 |
-| Mittlere Gegnerwertung (ARO) / Leistungswertung (TPR) | 100 % | 52,3 % | 0,511 | 0 % | 22 % | 0,577 |
-| Startwertung (RTNG, Rauschen 0,4) | 100 % | **85,9 %** | 0,669 | 0 % | 25 % | 0,652 |
-| Stichkampf (eine Partie, Referenz) | 100 % | **69,3 %** | 0,693 | – | 22 % | 0,615 |
-| Los (Referenz) | 0 % | – | – | – | 20 % | 0,573 |
+| Buchholz (BH) | 95 % | **59,6 %** | 0,553 | **34 % / 7,5 %** | 22 % | 0,594 |
+| BH Cut-1 | 95 % | 59,4 % | 0,552 | 30 % / 4,6 % | 22 % | 0,594 |
+| BH Cut-2 | 94 % | 59,3 % | 0,551 | 23 % / 2,6 % | 22 % | 0,593 |
+| BH Median-1 | 94 % | 59,0 % | 0,551 | 30 % / 4,6 % | 22 % | 0,592 |
+| BH Median-2 | 90 % | 58,8 % | 0,549 | 32 % / 3,9 % | 22 % | 0,591 |
+| Mittlerer Buchholz der Gegner (AOB) | 98 % | 58,2 % | 0,544 | 27 % / 6,7 % | 21 % | 0,592 |
+| Sonneborn-Berger (SB) | 95 % | 58,2 % | 0,545 | **35 % / 6,9 %** | 22 % | 0,591 |
+| Direktvergleich (DE) | **1,6 %** | 48,9 % (auf 350 Paaren) | 0,496 | 0 % | 20 % | 0,576 |
+| **Fortschritt (PS)** | 94 % | **63,1 %** | 0,572 | **0 % / 0 %** | 20 % | 0,601 |
+| Fortschrittswertungen der Gegner | 99 % | 61,2 % | 0,560 | 9 % / 1,7 % | 22 % | 0,598 |
+| Siege (WIN) / am Brett (WON) | 47 % | 50,1 % | 0,501 | 0 % | 20 % | 0,575 |
+| Siege mit Schwarz (BWG) | 63 % | 49,0 % | 0,496 | 0 % | 18 % | 0,573 |
+| Partien mit Schwarz (BPG) | 52 % | 49,5 % | 0,498 | 0 % | 18 % | 0,574 |
+| Mittlere Gegnerwertung (ARO) / Leistungswertung (TPR) | 100 % | 52,5 % | 0,512 | 0 % | 22 % | 0,579 |
+| Startwertung (RTNG, Rauschen 0,4) | 100 % | **85,8 %** | 0,667 | 0 % | 24 % | 0,654 |
+| Stichkampf (eine Partie, Referenz) | 100 % | **69,2 %** | 0,692 | – | 22 % | 0,617 |
+| Los (Referenz) | 0 % | – | – | – | 20 % | 0,576 |
 
 Tests: `test_the_hit_rates_of_experiment_1`, `test_the_resolution_of_experiment_1`, `test_the_flip_rates_of_experiment_2`, `test_the_winner_is_rarely_the_strongest_whatever_the_criterion`.
 
 | Frage | Befund | Test |
 |---|---|---|
-| Wer ist am Ende der wahre Stärkste? | **Der Sieger ist in 19 bis 25 % der Turniere der wahre Stärkste, egal welches Kriterium;** das Podium (Plätze 1 bis 3 als Menge) in höchstens 6 %. Tie-Breaker ordnen innerhalb der Punktgruppen, sie retten die Stärkeordnung eines kurzen Turniers nicht. | `test_the_winner_is_rarely_the_strongest_whatever_the_criterion` |
-| Direktvergleich nach Artikel 6 | Trennt in dieser Konfiguration **1,5 %** der punktgleichen Paare (329 von 22 125): Je größer die Gruppe, desto seltener haben alle einander gespielt, und ein Spieler steht nur vorn, wenn er es unabhängig vom Ausgang der fehlenden Partien ist: **Zweiergruppen 32 %, Dreiergruppen 5 %, Vierergruppen 0,2 %, ab fünf Spielern in keiner der 1054 Gruppen** (Gruppen der Hauptmenge: 715 mit zwei, 615 mit drei, 542 mit vier, 1054 mit fünf und mehr Spielern). | `test_the_resolution_of_experiment_1` |
-| Kaskaden (trennt ≥ 97 %) | DE → BH-C1 → BH → WIN: Treffer 58,6 %, 16 % kippbar; BH-C1 → BH → SB → DE: 58,7 % / 31 %; **PS → BH-C1 → SB: 62,3 % / 4 %**; WIN → DE → BH: 54,7 % / 14 %; **DE → PS → BH-C1: 62,3 % / 4 %**; AOB → BH → SB: 58,5 % / 32 %; BH-C1 → RTNG: 60,4 % / 29 %. | `test_the_cascades` |
-| Rücktritte 0 / 15 / 30 %, Runden ignoriert | Buchholz 59,5 / 54,5 / **45,2 %**; Cut-1 59,0 / 54,4 / 45,6 %. | `test_withdrawals_hurt_buchholz_and_help_sonneborn_berger_and_progressive` |
-| dasselbe nach FIDE Artikel 16 | Buchholz 59,5 / 58,4 / **54,2 %**; Cut-1 (ab 03/2026) 52,2 % bei 30 %; AOB 54,9 %. **Sonneborn-Berger steigt (58,2 / 62,4 / 64,1 %), der Fortschritt auch (63,2 / 70,2 / 71,1 %).** Die Regel hebt Buchholz, beseitigt den Einbruch aber nicht. | dto. |
+| Wer ist am Ende der wahre Stärkste? | **Der Sieger ist in 18 bis 24 % der Turniere der wahre Stärkste, egal welches Kriterium;** das Podium (Plätze 1 bis 3 als Menge) in höchstens 6 %. Tie-Breaker ordnen innerhalb der Punktgruppen, sie retten die Stärkeordnung eines kurzen Turniers nicht. | `test_the_winner_is_rarely_the_strongest_whatever_the_criterion` |
+| Direktvergleich nach Artikel 6 | Trennt in dieser Konfiguration **1,6 %** der punktgleichen Paare (350 von 22 080): Je größer die Gruppe, desto seltener haben alle einander gespielt, und ein Spieler steht nur vorn, wenn er es unabhängig vom Ausgang der fehlenden Partien ist: **Zweiergruppen 34 %, Dreiergruppen 5 %, Vierergruppen 0,1 %, ab fünf Spielern in keiner der 1040 Gruppen** (Gruppen der Hauptmenge: 725 mit zwei, 617 mit drei, 538 mit vier, 1040 mit fünf und mehr Spielern). | `test_the_resolution_of_experiment_1` |
+| Kaskaden (trennt ≥ 97 %) | DE → BH-C1 → BH → WIN: Treffer 59,0 %, 14 % kippbar; BH-C1 → BH → SB → DE: 59,0 % / 29 %; **PS → BH-C1 → SB: 62,3 % / 3 %**; WIN → DE → BH: 55,3 % / 12 %; **DE → PS → BH-C1: 62,3 % / 4 %**; AOB → BH → SB: 58,2 % / 28 %; BH-C1 → RTNG: 60,8 % / 31 %. | `test_the_cascades` |
+| Rücktritte 0 / 15 / 30 %, Runden ignoriert | Buchholz 59,6 / 53,9 / **44,8 %**; Cut-1 59,4 / 54,1 / 44,0 %. | `test_withdrawals_hurt_buchholz_and_help_sonneborn_berger_and_progressive` |
+| dasselbe nach FIDE Artikel 16 | Buchholz 59,6 / 58,9 / **51,6 %**; Cut-1 (ab 03/2026) 49,5 % bei 30 %; AOB 55,8 %. **Sonneborn-Berger steigt (58,2 / 61,0 / 63,0 %), der Fortschritt auch (63,1 / 67,9 / 70,8 %).** Die Regel hebt Buchholz, beseitigt den Einbruch aber nicht. | dto. |
 | Fassung 08/2024 gegen ab 03/2026 | Der Deckel des Dummy-Gegners (0,5 · Rundenzahl) ändert die Trefferquoten bei Rücktritten um höchstens 0,1 Punkte und die Freilos-Verzerrung um höchstens 1 Prozentpunkt. | `test_the_two_fide_versions_hardly_differ_for_withdrawals`, `test_the_two_fide_versions_differ_by_at_most_one_point_in_the_bye_bias` |
-| Freilose (31 Spieler), ignoriert | Verzerrung (positiv: Inhaber bevorzugt): Buchholz **−13**, Cut-1 −15, Sonneborn-Berger −19 Prozentpunkte; AOB +28. | `test_bye_bias` |
-| Freilose nach FIDE ab 03/2026 | Buchholz **+8**, Cut-1 +6, Sonneborn-Berger **+16**, AOB +21: Die Regel dreht die Benachteiligung in eine Bevorzugung. **Fortschritt 0**, Leistungswertung −3, Startwertung −1. **WIN (zählt das Freilos als Sieg): +45; WON: −17.** | dto. |
-| Rauschen der Startwertung 0 / 0,4 / 1 / 2 | Startwertung 100 / 86 / 70 / 61 %; Fortschritt 66 / 63 / 61 / 58 %; Buchholz Cut-1 61 / 59 / 61 / 60 %. | `test_noise` |
-| Remis 0 / 20 / 40 % | Buchholz 65,4 / 59,5 / 57,2 %; Fortschritt 70 / 63 / 62 %. Siege trennen ohne Remis nichts, bei 20 % 46 %, bei 40 % 54 % der Paare. | `test_draws` |
-| Feld und Runden (16/5, 32/5, 32/7, 32/9) | Buchholz 54,2 / 59,2 / 59,5 / 64,7 %; Fortschritt 55 / 64 / 63 / 65 %; Stichkampf 64 / 70 / 69 / 68 %. Kleine Felder tragen kaum Information; mehr Runden helfen ab etwa sieben Runden (Buchholz 7 → 9 Runden: 59,5 → 64,7 %), von 5 auf 7 Runden gibt es keinen sichtbaren Gewinn. | `test_sizes` |
+| Freilose (31 Spieler), ignoriert | Verzerrung (positiv: Inhaber bevorzugt): Buchholz **−13**, Cut-1 −16, Sonneborn-Berger −20 Prozentpunkte; AOB +26. | `test_bye_bias` |
+| Freilose nach FIDE ab 03/2026 | Buchholz **+8**, Cut-1 +7, Sonneborn-Berger **+13**, AOB +21: Die Regel dreht die Benachteiligung in eine Bevorzugung. **Fortschritt 0**, Leistungswertung −4, Startwertung −1. **WIN (zählt das Freilos als Sieg): +51; WON: −18.** | dto. |
+| Rauschen der Startwertung 0 / 0,4 / 1 / 2 | Startwertung 100 / 86 / 69 / 61 %; Fortschritt 65 / 63 / 61 / 57 %; Buchholz Cut-1 60 / 59 / 62 / 59 %. | `test_noise` |
+| Remis 0 / 20 / 40 % | Buchholz 67,0 / 59,6 / 58,7 %; Fortschritt 70 / 63 / 63 %. Siege trennen ohne Remis nichts, bei 20 % 47 %, bei 40 % 55 % der Paare. | `test_draws` |
+| Feld und Runden (16/5, 32/5, 32/7, 32/9) | Buchholz 53,3 / 58,9 / 59,6 / 63,6 %; Fortschritt 55 / 63 / 63 / 67 %; Stichkampf 65 / 70 / 69 / 69 %. Kleine Felder tragen kaum Information; mehr Runden helfen ab etwa sieben Runden (Buchholz 7 → 9 Runden: 59,6 → 63,6 %), von 5 auf 7 Runden gibt es keinen sichtbaren Gewinn. | `test_sizes` |
 
 ## Befunde und Korrekturen gegenüber dem Plan
 
 - **Vereinfachte Paarung kehrte das Ergebnis um (Phase 0):** Mit einer Monrad-Paarung lag der Fortschritt unter dem Zufall (45 %); mit der FIDE-Dutch-Engine ist er das beste
   Rechenkriterium (63 %). Die Tie-Breaker hängen an der **Paarungsregel**, nicht nur an den Punktgruppen. Deshalb übernimmt dieses Stück die echte Engine.
 - **Der Direktvergleich war in der Vorab-Messreihe zu großzügig:** Als „Minitabelle“ (Summe der Ergebnisse gegen alle Punktgleichen, auch bei fehlenden Partien) trennte er 69 %
-  der Paare mit 57 % Treffern. Nach Artikel 6 (Gruppe vollständig gespielt oder unabhängig vom Ausgang der fehlenden Partien vorn) trennt er **1,5 %**. Die Messung folgt dem
+  der Paare mit 57 % Treffern. Nach Artikel 6 (Gruppe vollständig gespielt oder unabhängig vom Ausgang der fehlenden Partien vorn) trennt er **1,6 %**. Die Messung folgt dem
   Wortlaut.
 - **AOB ist ein Mittelwert:** Die Vorab-Messreihe summierte die Buchholz-Werte der Gegner (Freilos-Verzerrung −20 Prozentpunkte); FIDE Art. 8 Abs. 2 verlangt den **Durchschnitt** der
-  Gegner am Brett (jetzt +28 ignoriert, +21 nach Artikel 16).
+  Gegner am Brett (jetzt +26 ignoriert, +21 nach Artikel 16).
 - **WIN zählt Freilose als Siege** (7.1); WON nur Partien am Brett (7.2). Die Vorab-Messreihe zählte nur Partien am Brett; beide stehen jetzt getrennt, mit entgegengesetzter
-  Freilos-Verzerrung (+45 und −17).
+  Freilos-Verzerrung (+51 und −18).
 - **Die Fassung ab 03/2026 deckelt den Dummy** auf 0,5 · Rundenzahl (16.4.2); die Fassung 08/2024 kennt den Deckel nicht. Gelesen wurde das Handbuch-Webportal; der
   Unterschied ist in den Messungen klein (siehe oben).
-- **Kippen:** In der Vorab-Messreihe 19 % der Turniere für Buchholz bei 42 Turnieren mit Gleichstand um Platz 1; mit 400 Turnieren (125 mit Gleichstand) 32 %. Die Unsicherheit
-  einer Quote aus 125 Turnieren liegt bei etwa ±4 Prozentpunkten (Standardfehler; 95 %: etwa ±8); die Quote je Umkehrung (1361 Fälle) hat dieselbe relative Unsicherheit, weil die Umkehrungen in denselben Turnieren liegen.
+- **Kippen:** In der Vorab-Messreihe 19 % der Turniere für Buchholz bei 42 Turnieren mit Gleichstand um Platz 1; mit 400 Turnieren (124 mit Gleichstand) 34 %. Die Unsicherheit
+  einer Quote aus 124 Turnieren liegt bei etwa ±4 Prozentpunkten (Standardfehler; 95 %: etwa ±8); die Quote je Umkehrung (1351 Fälle) hat dieselbe relative Unsicherheit, weil die Umkehrungen in denselben Turnieren liegen.
 - **Fortschrittswerte der Gegner sind kippbar** (9 % der Turniere): Eine Umkehr ändert die Fortschrittswertung der Beteiligten und damit die Summe ihrer Gegner. Die eigene
   Fortschrittswertung bleibt unberührt.
 - **Abbruch bei kleinem Feld (beim Bau gefunden):** Mit 8 Spielern gibt es höchstens 7 Runden ohne Wiederholung; auch größere Felder mit vielen Runden und Rücktritten kommen an
   den Punkt, an dem die Engine keine zulässige Paarung mehr findet. Zuerst stürzte die App an dieser Stelle ab; jetzt endet das Turnier früh, und die App sagt es
   (`test_a_tournament_that_cannot_be_paired_to_the_end_stops_early_and_stays_consistent`). Die festen Turniere der Experimente sind alle vollständig.
-- **Standard-Seed:** 29 (drei Spieler an der Spitze, Buchholz Cut-1 entscheidet, Treffer 61 % gegen den Mittelwert 59 %, nicht kippbar). Seed 23 ist ein kippbares Turnier
+- **Standard-Seed:** 29 (drei Spieler an der Spitze, Buchholz Cut-1 entscheidet, Treffer 61 % gegen den Mittelwert 59 %, nicht kippbar). Seed 31 ist ein kippbares Turnier
   (Preset „Kippbares Turnier“).
 
 ## Abgrenzung
@@ -131,10 +131,10 @@ Tests: `test_the_hit_rates_of_experiment_1`, `test_the_resolution_of_experiment_
 - **Treffer ist eine Aussage über die Stärke, nicht über Verdienst:** Das Reglement verlangt nicht, dass der Stärkere vorn steht; die Stärke ist nur der Maßstab, den eine
   Simulation kennt.
 - **Artikel 16 nur teilweise nachgebaut:** Freilos des Paarungsprogramms und Runden nach dem Rücktritt; keine „requested byes“, keine Forfaits. Rücktritte sind gleichverteilt.
-- **Kippen ist eine Möglichkeit, keine Absicht;** die Quote je Turnier beruht auf 125 Turnieren mit Gleichstand um Platz 1.
+- **Kippen ist eine Möglichkeit, keine Absicht;** die Quote je Turnier beruht auf 124 Turnieren mit Gleichstand um Platz 1.
 - **Der Direktvergleich hat nach Artikel 6 in dieser Konfiguration kaum Wirkung;** in Turnieren mit weniger Teilnehmern je Punktgruppe oder mehr Runden greift er öfter.
 - **Die Startwertung ist kein Leistungsmaß:** ihr Treffer hängt allein an der Güte der Setzliste.
-- **Feste Turniere:** Die Experimente rechnen auf vorberechneten Turnieren; einzelne Zellen (Direktvergleich bei kleinen Feldern: 39 bis 82 %) beruhen auf wenigen Paaren und
+- **Feste Turniere:** Die Experimente rechnen auf vorberechneten Turnieren; einzelne Zellen (Direktvergleich bei kleinen Feldern: 39 bis 61 %) beruhen auf wenigen Paaren und
   sind nicht zu deuten.
 - **Alles simuliert**, ein Generator, Felder bis 32.
 
@@ -149,9 +149,10 @@ Tests: `test_the_hit_rates_of_experiment_1`, `test_the_resolution_of_experiment_
 
 ## Tests
 
-361 Tests, einige Minuten (der erste Seitenaufruf rechnet die Experimente): Einheiten gegen die von Hand gerechneten Mini-Turniere (`test_criteria.py`: sechs Spieler,
-fünf mit Freilosen, vier mit Rücktritt), Turnier und Datei (`test_tournament.py`, `test_data.py`), die sieben **Engine-Module mit ihren Tests** aus `schweizer-system-demo`
-(`test_engine.py`, `test_blossom.py`, `test_bracket.py`, `test_colour.py`, `test_compat.py`), Generator (`test_generator.py`, wortgleich), **Orakel**
+372 Tests, einige Minuten (der erste Seitenaufruf rechnet die Experimente): Einheiten gegen die von Hand gerechneten Mini-Turniere (`test_criteria.py`: sechs Spieler,
+fünf mit Freilosen, vier mit Rücktritt), Turnier und Datei (`test_tournament.py`, `test_data.py`), die acht **Engine-Module mit ihren Tests** aus `schweizer-system-demo`
+(`test_engine.py`, `test_blossom.py`, `test_bracket.py`, `test_chain.py`, `test_colour.py`, `test_compat.py`; `test_colour.py` ohne den bbpPairings-Teil, dazu `tests/ss_scenario.py`, ein Turnier-Generator nur für den
+Regeltext-Modus), Generator (`test_generator.py`, wortgleich), **Orakel**
 (`test_oracle_tiebreak.py`: Kriterien rundenweise neu gerechnet in allen drei Behandlungen, Kaskade gegen einen lexikografischen Schlüssel, **Direktvergleich gegen die
 Aufzählung aller Ausgänge der fehlenden Partien** auf 250 Zufallsgruppen, Umkehr einer Partie gegen die betroffenen Nachbarn), Maße und Verdikte (`test_evaluation.py`,
 `test_verdict_boundaries.py`: Schwellen mit künstlichen Messwerten), alle Zahlen dieses README (`test_claims.py`), Presets, ausblendbare Regler
@@ -172,7 +173,7 @@ zwei ungenutzte Funktionen, redundante Bedingungen und ein überflüssiges Epsil
 |---|---|
 | `app.py` | Streamlit-Oberfläche |
 | `turnier_generator.py` | gemeinsamer Generator (wortgleich in allen Repos der Linie; liefert die Anfangsstärken) |
-| `ss_model.py`, `ss_compat.py`, `ss_colour.py`, `ss_quality.py`, `ss_blossom.py`, `ss_bracket.py`, `ss_engine.py` | FIDE-Dutch-Engine (wortgleich mit `schweizer-system-demo`) |
+| `ss_model.py`, `ss_compat.py`, `ss_colour.py`, `ss_quality.py`, `ss_blossom.py`, `ss_bracket.py`, `ss_chain.py`, `ss_engine.py` | FIDE-Dutch-Engine (wortgleich mit `schweizer-system-demo`) |
 | `tbk_tournament.py` | Turnier mit der Engine: Stärken, Setzliste, Ausgänge, Rücktritte |
 | `tbk_criteria.py` | Kriterien, Direktvergleich (Art. 6), Art. 16, Kaskade, Umkehr einer Partie |
 | `tbk_evaluation.py` | Maße, Analyse des gezeigten Turniers, sieben Experimente |

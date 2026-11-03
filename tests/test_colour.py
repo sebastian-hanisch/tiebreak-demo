@@ -1,4 +1,6 @@
-"""Farbpräferenz-Klassifikation (Art. 1.7) und Zuteilung (Art. 5.2)."""
+"""Farbpräferenz-Klassifikation (Art. 1.7) und Zuteilung (Art. 5.2).
+
+Kopie aus `schweizer-system-demo` OHNE den dortigen Abgleich mit bbpPairings (diese Demo lädt das Referenzprogramm nicht)."""
 
 from __future__ import annotations
 
@@ -114,6 +116,42 @@ def test_allocate_same_unresolved_strong_preference_grants_to_higher_rank():
     pairing = allocate(higher, lower)
     assert pairing.black == higher.rank
     assert pairing.white == lower.rank
+
+
+def test_allocate_alternates_to_the_most_recent_game_in_which_the_colours_differed():
+    # Regressionstest (echter, gegen bbpPairings gefundener Fehler, ~1,5 % aller Paare): Art. 5.2.3 heißt
+    # "Alternate the colours to the most recent time in which one player had White and the other Black",
+    # nicht "jeder wechselt zu seiner eigenen letzten Farbe". Beide haben hier nach 4 Runden Differenz 0 und
+    # zuletzt Weiß (also mild Schwarz); die jüngste Gegenüberstellung mit verschiedenen Farben ist Runde 2
+    # (Spieler 1: Schwarz, Spieler 4: Weiß) - also bekommt jetzt Spieler 1 Weiß. Die alte Fassung ließ
+    # 5.2.3 hier ins Leere laufen und gab dem Höherrangigen (1) Schwarz.
+    one = _p(1, [(11, "w"), (12, "b"), (13, "b"), (14, "w")])
+    four = _p(4, [(21, "b"), (22, "w"), (23, "b"), (24, "w")])
+    assert classify(one).strength == MILD and classify(four).strength == MILD
+    pairing = allocate(one, four)
+    assert (pairing.white, pairing.black) == (1, 4)
+    swapped = allocate(four, one)
+    assert (swapped.white, swapped.black) == (1, 4)
+
+
+def test_allocate_alternation_compares_played_games_not_round_numbers():
+    # bbpPairings' `findFirstColorDifference` (common.cpp) stellt in JEDER Historie die k-te jüngste
+    # GESPIELTE Partie gegenüber, Freilose übersprungen - nicht Runde gegen Runde. Spieler 11 hatte ein
+    # Freilos in Runde 1, Spieler 7 in Runde 3; beide haben gespielt w, b, w (nur anders verteilt) und
+    # beide wollen STARK Schwarz. Nach gespielten Partien gibt es nie einen Unterschied, also entscheidet
+    # 5.2.4: Spieler 7 (Score 2,0) ist höherrangig als 11 (1,5) und bekommt Schwarz. Nach Rundennummern
+    # läge der Unterschied in Runde 2 (11: Weiß, 7: Schwarz) und 11 bekäme fälschlich Schwarz.
+    eleven = Player(rank=11, score=1.5, games=tuple(
+        GameRecord(i + 1, opp, col, 0.5, counted_as_bye=col is None)
+        for i, (opp, col) in enumerate([(0, None), (30, "w"), (31, "b"), (32, "w")])
+    ))
+    seven = Player(rank=7, score=2.0, games=tuple(
+        GameRecord(i + 1, opp, col, 0.5, counted_as_bye=col is None)
+        for i, (opp, col) in enumerate([(33, "w"), (34, "b"), (0, None), (35, "w")])
+    ))
+    assert classify(eleven).strength == STRONG and classify(seven).strength == STRONG
+    pairing = allocate(eleven, seven)
+    assert (pairing.white, pairing.black) == (11, 7)
 
 
 def test_allocate_same_unresolved_preference_grants_to_higher_score_not_just_higher_rank():

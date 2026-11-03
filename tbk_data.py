@@ -14,14 +14,14 @@ from tbk_tournament import Game, Tournament
 
 ROOT = Path(__file__).resolve().parent
 DATA_PATH = ROOT / "data" / "tournaments.json.gz"
-ENGINE_MODULES = ("ss_model", "ss_compat", "ss_colour", "ss_quality", "ss_blossom", "ss_bracket", "ss_engine")
+ENGINE_MODULES = ("ss_model", "ss_compat", "ss_colour", "ss_quality", "ss_blossom", "ss_bracket", "ss_chain", "ss_engine")
 FORMAT = 1
 _COLOUR = {"": 0, "w": 1, "b": 2}
 _COLOUR_BACK = {0: "", 1: "w", 2: "b"}
 
 
 def engine_fingerprint() -> str:
-    """SHA-1 über die sieben Engine-Module (Zeilenenden normalisiert): hält fest, mit welcher Engine die Datei erzeugt wurde."""
+    """SHA-1 über die acht Engine-Module (Zeilenenden normalisiert): hält fest, mit welcher Engine die Datei erzeugt wurde."""
     h = hashlib.sha1()
     for name in ENGINE_MODULES:
         h.update((ROOT / f"{name}.py").read_bytes().replace(b"\r\n", b"\n"))
