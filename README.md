@@ -29,14 +29,14 @@ Empfehlung nach Zweck.
   (1 − d)·σ(Stärkedifferenz). Rücktritte: ein Spieler tritt vor einer Runde zwischen 3 und der vorletzten zurück (`absent` der Engine) und bleibt mit seinem Stand in der Tabelle. Findet die Engine in einer Runde keine Paarung ohne Wiederholung (kleines Feld, viele Runden oder Rücktritte), **endet das
   Turnier früher** (`Tournament.rounds` ist die Zahl der gespielten Runden), wie ein echtes Turnier; die App weist darauf hin.
 - **Kriterien (FIDE C.07):** Buchholz BH (Art. 8 Abs. 1) mit Cut-1, Cut-2, Median-1, Median-2 (Art. 14), Mittlerer Buchholz der Gegner AOB (8.2), Sonneborn-Berger SB (9.1),
-  Direktvergleich DE (Art. 6), Fortschrittswertung PS (7.5), dazu die Fortschrittswertungen der Gegner (älterer Brauch, ohne FIDE-Kürzel), Siege WIN (7.1, zählt Freilose) und WON
-  (7.2, nur am Brett), Siege mit Schwarz BWG (7.4), Partien mit Schwarz BPG (7.3), REP (7.6, nach FIDE die Runden ohne Halbpunkt- und Nullpunkt-Freilose und Forfait-Niederlagen), mittlere Gegnerwertung ARO (10.1), Leistungswertung TPR (10.2, hier
+  Direktvergleich DE (Art. 6), Fortschrittswertung (Progressive Score) PS (7.5), dazu die Fortschrittswertungen der Gegner (älterer Brauch, ohne FIDE-Kürzel), Siege WIN (7.1, zählt Freilose) und WON
+  (7.2, nur am Brett), Siege mit Schwarz BWG (7.4), Partien mit Schwarz BPG (7.3), REP (7.6, nach FIDE die Runden ohne Halbpunkt- und Nullpunkt-Freilose und Forfait-Niederlagen), mittlere Gegnerwertung ARO (10.1), Turnierleistung (Performance Rating) TPR (10.2, hier
   logistisch statt nach der FIDE-Tabelle) und die Startwertung RTNG (Art. 10.6, nur in der Fassung ab 03/2026; in 08/2024 gibt es Artikel 10.6 nicht). Referenzen: der **Stichkampf** (eine Partie unter den Punktgleichen) und das **Los**.
 - **Kaskade (Art. 4 Abs. 2):** Für jede Untergruppe, die ein Kriterium nicht trennt, gilt das nächste; am Ende entscheidet das Los.
 - **Direktvergleich (Art. 6):** Die Summe der Ergebnisse gegeneinander (mehrfache Treffen als Mittel). Haben alle einander gespielt, ordnet sie die Gruppe; sonst steht im
   Schweizer System nur ein Spieler vorn, der es **unabhängig vom Ausgang der fehlenden Partien** ist; danach gilt Artikel 6 für den Rest erneut.
 - **Nicht gespielte Runden (Art. 16):** Wählbar zwischen *ignorieren*, der Fassung *08/2024* und der Fassung *ab 03/2026*. Für die Gegner zählt eine Runde nach dem Rücktritt als
-  Remis; für die eigenen Kriterien gilt ein Dummy-Gegner mit der eigenen Punktzahl, **ab 03/2026 höchstens 0,5 · Rundenzahl** (16.4.2); beim Streichen wird zuerst der kleinste
+  Remis; für die eigenen Kriterien gilt ein virtueller Gegner (Virtual Opponent) mit der eigenen Punktzahl, **ab 03/2026 höchstens 0,5 · Rundenzahl** (16.4.2); beim Streichen wird zuerst der kleinste
   Beitrag einer freiwillig nicht gespielten Runde gestrichen (16.5).
 - **Maße:** *Auflösung* (Anteil der punktgleichen Paare, die ein Kriterium trennt), *Treffer* (Anteil der getrennten Paare, bei denen der Stärkere vorn steht), *Erwartung*
   (mittlere σ der Stärkedifferenz des Vorderen), *Sieger* und *Podium* richtig, *τ* des Endstandes gegen die Stärke, *Kippen* (Turniere mit Gleichstand um Platz 1, in denen die
@@ -73,7 +73,7 @@ Hauptmenge, Behandlung nicht gespielter Runden nach FIDE ab 03/2026 (ohne Freilo
 | Siege (WIN) / am Brett (WON) | 47 % | 50,1 % | 0,501 | 0 % | 20 % | 0,575 |
 | Siege mit Schwarz (BWG) | 63 % | 49,0 % | 0,496 | 0 % | 18 % | 0,573 |
 | Partien mit Schwarz (BPG) | 52 % | 49,5 % | 0,498 | 0 % | 18 % | 0,574 |
-| Mittlere Gegnerwertung (ARO) / Leistungswertung (TPR) | 100 % | 52,5 % | 0,512 | 0 % | 22 % | 0,579 |
+| Mittlere Gegnerwertung (ARO) / Turnierleistung (TPR) | 100 % | 52,5 % | 0,512 | 0 % | 22 % | 0,579 |
 | Startwertung (RTNG, Rauschen 0,4) | 100 % | **85,8 %** | 0,667 | 0 % | 24 % | 0,654 |
 | Stichkampf (eine Partie, Referenz) | 100 % | **69,2 %** | 0,692 | – | 22 % | 0,617 |
 | Los (Referenz) | 0 % | – | – | – | 20 % | 0,576 |
@@ -87,9 +87,9 @@ Tests: `test_the_hit_rates_of_experiment_1`, `test_the_resolution_of_experiment_
 | Kaskaden (trennt ≥ 97 %) | DE → BH-C1 → BH → WIN: Treffer 59,0 %, 14 % kippbar; BH-C1 → BH → SB → DE: 59,0 % / 29 %; **PS → BH-C1 → SB: 62,3 % / 3 %**; WIN → DE → BH: 55,3 % / 12 %; **DE → PS → BH-C1: 62,3 % / 4 %**; AOB → BH → SB: 58,2 % / 28 %; BH-C1 → RTNG: 60,8 % / 31 %. | `test_the_cascades` |
 | Rücktritte 0 / 15 / 30 %, Runden ignoriert | Buchholz 59,6 / 53,9 / **44,8 %**; Cut-1 59,4 / 54,1 / 44,0 %. | `test_withdrawals_hurt_buchholz_and_help_sonneborn_berger_and_progressive` |
 | dasselbe nach FIDE Artikel 16 | Buchholz 59,6 / 58,9 / **51,6 %**; Cut-1 (ab 03/2026) 49,5 % bei 30 %; AOB 55,8 %. **Sonneborn-Berger steigt (58,2 / 61,0 / 63,0 %), der Fortschritt auch (63,1 / 67,9 / 70,8 %).** Die Regel hebt Buchholz, beseitigt den Einbruch aber nicht. | dto. |
-| Fassung 08/2024 gegen ab 03/2026 | Der Deckel des Dummy-Gegners (0,5 · Rundenzahl) ändert die Trefferquoten bei Rücktritten um höchstens 0,1 Punkte und die Freilos-Verzerrung um höchstens 1 Prozentpunkt. | `test_the_two_fide_versions_hardly_differ_for_withdrawals`, `test_the_two_fide_versions_differ_by_at_most_one_point_in_the_bye_bias` |
+| Fassung 08/2024 gegen ab 03/2026 | Der Deckel des virtuellen Gegners (0,5 · Rundenzahl) ändert die Trefferquoten bei Rücktritten um höchstens 0,1 Punkte und die Freilos-Verzerrung um höchstens 1 Prozentpunkt. | `test_the_two_fide_versions_hardly_differ_for_withdrawals`, `test_the_two_fide_versions_differ_by_at_most_one_point_in_the_bye_bias` |
 | Freilose (31 Spieler), ignoriert | Verzerrung (positiv: Inhaber bevorzugt): Buchholz **−13**, Cut-1 −16, Sonneborn-Berger −20 Prozentpunkte; AOB +26. | `test_bye_bias` |
-| Freilose nach FIDE ab 03/2026 | Buchholz **+8**, Cut-1 +7, Sonneborn-Berger **+13**, AOB +21: Die Regel dreht die Benachteiligung in eine Bevorzugung. **Fortschritt 0**, Leistungswertung −4, Startwertung −1. **WIN (zählt das Freilos als Sieg): +51; WON: −18.** | dto. |
+| Freilose nach FIDE ab 03/2026 | Buchholz **+8**, Cut-1 +7, Sonneborn-Berger **+13**, AOB +21: Die Regel dreht die Benachteiligung in eine Bevorzugung. **Fortschritt 0**, Turnierleistung −4, Startwertung −1. **WIN (zählt das Freilos als Sieg): +51; WON: −18.** | dto. |
 | Rauschen der Startwertung 0 / 0,4 / 1 / 2 | Startwertung 100 / 86 / 69 / 61 %; Fortschritt 65 / 63 / 61 / 57 %; Buchholz Cut-1 60 / 59 / 62 / 59 %. | `test_noise` |
 | Remis 0 / 20 / 40 % | Buchholz 67,0 / 59,6 / 58,7 %; Fortschritt 70 / 63 / 63 %. Siege trennen ohne Remis nichts, bei 20 % 47 %, bei 40 % 55 % der Paare. | `test_draws` |
 | Feld und Runden (16/5, 32/5, 32/7, 32/9) | Buchholz 53,3 / 58,9 / 59,6 / 63,6 %; Fortschritt 55 / 63 / 63 / 67 %; Stichkampf 65 / 70 / 69 / 69 %. Kleine Felder tragen kaum Information; mehr Runden helfen ab etwa sieben Runden (Buchholz 7 → 9 Runden: 59,6 → 63,6 %), von 5 auf 7 Runden gibt es keinen sichtbaren Gewinn. | `test_sizes` |
@@ -105,7 +105,7 @@ Tests: `test_the_hit_rates_of_experiment_1`, `test_the_resolution_of_experiment_
   Gegner am Brett (jetzt +26 ignoriert, +21 nach Artikel 16).
 - **WIN zählt Freilose als Siege** (7.1); WON nur Partien am Brett (7.2). Die Vorab-Messreihe zählte nur Partien am Brett; beide stehen jetzt getrennt, mit entgegengesetzter
   Freilos-Verzerrung (+51 und −18).
-- **Die Fassung ab 03/2026 deckelt den Dummy** auf 0,5 · Rundenzahl (16.4.2); die Fassung 08/2024 kennt den Deckel nicht. Gelesen wurde das Handbuch-Webportal; der
+- **Die Fassung ab 03/2026 deckelt den virtuellen Gegner** auf 0,5 · Rundenzahl (16.4.2); die Fassung 08/2024 kennt den Deckel nicht. Gelesen wurde das Handbuch-Webportal; der
   Unterschied ist in den Messungen klein (siehe oben).
 - **Kippen:** In der Vorab-Messreihe 19 % der Turniere für Buchholz bei 42 Turnieren mit Gleichstand um Platz 1; mit 400 Turnieren (124 mit Gleichstand) 34 %. Die Unsicherheit
   einer Quote aus 124 Turnieren liegt bei etwa ±4 Prozentpunkten (Standardfehler; 95 %: etwa ±8); die Quote je Umkehrung (1351 Fälle) hat dieselbe relative Unsicherheit, weil die Umkehrungen in denselben Turnieren liegen.

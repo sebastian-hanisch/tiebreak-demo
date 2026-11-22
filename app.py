@@ -115,7 +115,7 @@ with st.expander("So entscheidet man bei Punktgleichheit", expanded=True):
    **Untergruppe** (FIDE C.07, Art. 4 Abs. 2); was am Ende übrig bleibt, entscheidet das Los.
 2. **Was die Kriterien lesen:** Die **Buchholz**-Familie addiert die Punkte der Gegner (mit Streichungen: Cut-1, Median-1), **Sonneborn-Berger** gewichtet sie mit dem
    eigenen Ergebnis, die **Fortschrittswertung** summiert die Zwischenstände nach jeder Runde, der **Direktvergleich** zählt nur die Partien unter den Punktgleichen.
-3. **Nicht gespielte Runden:** Freilose und Runden nach einem Rücktritt kennt Buchholz nicht von selbst; **Artikel 16** rechnet einen Dummy-Gegner mit der eigenen
+3. **Nicht gespielte Runden:** Freilose und Runden nach einem Rücktritt kennt Buchholz nicht von selbst; **Artikel 16** rechnet einen virtuellen Gegner (Virtual Opponent) mit der eigenen
    Punktzahl. Die Fassung ab März 2026 deckelt diese auf 0,5 mal Rundenzahl.
 4. **Der Maßstab:** In der Simulation ist die wahre Stärke bekannt. Ein Kriterium **trifft**, wenn es von zwei punktgleichen Spielern den stärkeren vorn einordnet.
         """
@@ -364,17 +364,17 @@ und **Median-2** je zwei. **AOB** ist der Mittelwert der $BH_j$ über die Gegner
 
 **Sonneborn-Berger.** $SB_i = \sum_{j \in O_i} s_j \, p_{ij}$ mit $p_{ij}$ den Punkten von $i$ gegen $j$.
 
-**Fortschritt.** $PS_i = \sum_{r=1}^{R} s_i^{(r)}$ mit $s_i^{(r)}$ dem Punktestand nach Runde $r$.
+**Fortschritt (Progressive Score).** $PS_i = \sum_{r=1}^{R} s_i^{(r)}$ mit $s_i^{(r)}$ dem Punktestand nach Runde $r$.
 
 **Direktvergleich (Art. 6).** Innerhalb der Gruppe $G$ zählt $d_i = \sum_{j \in G} p_{ij}$ (mehrfache Treffen als Mittel). Haben alle einander gespielt, ordnet $d$ die
 Gruppe; sonst steht nur ein Spieler $i$ vorn, für den $d_i > d_j + m_j$ für alle $j \neq i$ gilt ($m_j$ die Zahl der fehlenden Partien von $j$ in der Gruppe), danach gilt
 Artikel 6 für den Rest erneut.
 
 **Nicht gespielte Runden (Art. 16).** Für die Gegner zählt eine Runde nach dem Rücktritt als Remis ($s_j^{\ast} = s_j + \tfrac12 u_j$ mit $u_j$ der Zahl dieser Runden). Für
-die eigenen Kriterien gilt ein Dummy-Gegner mit der Punktzahl $\min(s_i, c)$ und $c = \tfrac12 R$ (Fassung ab 03/2026; 08/2024: $c = \infty$) für Freilose und Runden nach
+die eigenen Kriterien gilt ein virtueller Gegner (Virtual Opponent) mit der Punktzahl $\min(s_i, c)$ und $c = \tfrac12 R$ (Fassung ab 03/2026; 08/2024: $c = \infty$) für Freilose und Runden nach
 dem Rücktritt; beim Streichen wird zuerst der kleinste Beitrag einer freiwillig nicht gespielten Runde gestrichen.
 
-**Leistungswertung.** $\mathrm{TPR}_i = \overline{r}_{O_i} + \ln\!\frac{f_i}{1 - f_i}$ mit $f_i$ der Punktquote an den Brettern (auf $[0{,}02;\,0{,}98]$ begrenzt), logistisch statt
+**Turnierleistung (Performance Rating).** $\mathrm{TPR}_i = \overline{r}_{O_i} + \ln\!\frac{f_i}{1 - f_i}$ mit $f_i$ der Punktquote an den Brettern (auf $[0{,}02;\,0{,}98]$ begrenzt), logistisch statt
 der FIDE-Tabelle.
 
 **Treffer.** Anteil der von einem Kriterium getrennten punktgleichen Paare $(i, j)$, bei denen der vordere Spieler die größere wahre Stärke hat; **Erwartung**: Mittel von

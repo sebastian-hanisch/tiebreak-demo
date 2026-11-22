@@ -30,7 +30,7 @@ NAMES = {
     "BPG": "Partien mit Schwarz",
     "REP": "Runden, in denen man spielen wollte",
     "ARO": "Mittlere Gegnerwertung",
-    "TPR": "Leistungswertung",
+    "TPR": "Turnierleistung (Performance Rating)",
     "RTNG": "Startwertung",
 }
 VALUE_KEYS = tuple(k for k in KEYS if k != "DE")
@@ -84,7 +84,7 @@ def values(t: Tournament, mode: str = "ignore") -> dict:
     """Alle Kriterien außer DE: Schlüssel -> Liste je Startnummer (Index = Nummer − 1).
 
     `mode`: "ignore" (Freilos und Runden nach Rücktritt zählen für Buchholz und Sonneborn-Berger nicht) oder FIDE Artikel 16 in der Fassung "fide2024" bzw.
-    "fide2026" (Unterschied: der Dummy-Gegner für eigene nicht gespielte Runden hat höchstens 0,5 · Rundenzahl Punkte, Artikel 16.4.2)."""
+    "fide2026" (Unterschied: der virtuelle Gegner (Virtual Opponent) für eigene nicht gespielte Runden hat höchstens 0,5 · Rundenzahl Punkte, Artikel 16.4.2)."""
     if mode not in C.MODES:
         raise ValueError(f"unbekannte Behandlung: {mode}")
     n, R = t.n, t.rounds
